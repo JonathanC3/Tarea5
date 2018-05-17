@@ -3,7 +3,7 @@ package GUI;
 
 import GUI.*;
 import Domain.ConsumerTail;
-import Domain.Emerald;
+
 
 import Domain.ProducerShadow;
 import Domain.SynchronizedBuffer;
@@ -32,11 +32,11 @@ public class Window extends Application implements Runnable {
     private Scene scene;
     private Canvas canvas;
     private Image fondo;
-    //private 
+    private SynchronizedBuffer sharedLocation;
     private ProducerShadow producerShadow;
     private ConsumerTail consumerTail;
-    private Emerald emerald;
-    private Image ring;
+    
+    private Image ring, emerald;
     
 
     private GraphicsContext gc;
@@ -58,19 +58,20 @@ public class Window extends Application implements Runnable {
             this.gc = this.canvas.getGraphicsContext2D();
             this.fondo = new Image(new FileInputStream("src/assets/r6tulurfk2.bmp"));
             this.ring=new Image(new FileInputStream("src/assets/ring.png"));
+            this.emerald=new Image(new FileInputStream("src/assets/emeralds.png"));
             this.pane.getChildren().add(this.canvas);
             
             primaryStage.setScene(this.scene);
 
-            SynchronizedBuffer sharedLocation = new SynchronizedBuffer();
+            sharedLocation = new SynchronizedBuffer();
                 
             this.producerShadow = new ProducerShadow(sharedLocation, -60, 415);
             this.consumerTail = new ConsumerTail(sharedLocation, 1200, 415);
-            this.emerald = new Emerald(sharedLocation, 0, 345);
+            
             
             this.producerShadow.start();
             this.consumerTail.start();
-            this.emerald.start();
+            
            
             
 
@@ -96,7 +97,7 @@ public class Window extends Application implements Runnable {
         long start;
         long elapsed;
         long wait;
-        int fps = 20;
+        int fps = 30;
         long time = 1000 / fps;
         
         while (true) {
@@ -119,10 +120,16 @@ public class Window extends Application implements Runnable {
         
         gc.clearRect(0, 0, 1200, 500);
         gc.drawImage(this.fondo, 0, 0, 1200, 500);
-        gc.drawImage(this.ring, 525, 410, 100, 100);
+        
         gc.drawImage(this.producerShadow.getImage(), this.producerShadow.getX(), this.producerShadow.getY(), 90, 90);
         gc.drawImage(this.consumerTail.getImage(), this.consumerTail.getX(), this.consumerTail.getY(), 50, 80);
-        gc.drawImage(this.emerald.getImage(), this.emerald.getX(), this.emerald.getY(), 35, 35);
+        if(sharedLocation.paint()==1){
+            gc.drawImage(this.emerald, 555, 450, 35, 35);
+            
+        } 
+        gc.drawImage(this.ring, 525, 410, 100, 100);
+        
+        
         
         //gc.drawImage(this.emeralda, 545, 445, 35, 35);
     

@@ -5,6 +5,7 @@ public class SynchronizedBuffer implements Buffer {
     private int buffer = -1;
     private int occupiedBuffer = 0;
     private int paint = 0;
+    private int acum=0;
 
     @Override
     public synchronized void set(int value) {
@@ -19,6 +20,7 @@ public class SynchronizedBuffer implements Buffer {
         this.buffer = value;
         this.paint = 1;
         ++this.occupiedBuffer;
+        acum++;
 
         notify();
     } // set
@@ -46,6 +48,9 @@ public class SynchronizedBuffer implements Buffer {
     public void setPaint(int paint){
         this.paint = paint;
     }
-
+    public int num(){
+        return this.acum;
+    } 
+   
 } // fin de la clase
 
